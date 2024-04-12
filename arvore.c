@@ -107,7 +107,8 @@ int buscar_no(No* no, int x){
     }
 }
 
-
+// função para imprimir a arvore só verifica se tem arvore e raiz e chama outra função auxiliar que de fato vai manipular os nós
+//igual acontece na função de busca
 void arvore_imprimir(Arvore *arvore) {
     if (arvore != NULL && arvore->raiz != NULL) {
         // Chama uma função auxiliar para imprimir os nós
@@ -115,7 +116,7 @@ void arvore_imprimir(Arvore *arvore) {
     }
 }
 
-// Função auxiliar para imprimir os nós em ordem
+// Função auxiliar para imprimir os nós em ordem so imprime a esqueda  e volta a direita
 void imprimir_em_ordem(No *no) {
     if (no != NULL) {
         imprimir_em_ordem(no->esquerda);
@@ -124,7 +125,8 @@ void imprimir_em_ordem(No *no) {
     }
 }
 
-// Função auxiliar para encontrar o nó mínimo em uma árvore
+// Função auxiliar para encontrar o nó mais a esquerda da arvore para usar no caso de ter valor a direita e a esquerda da  arvore
+// da pra fazer o contrario e procura o no mais a direita
 No *encontrar_minimo(No *raiz) {
     No *atual = raiz;
     while (atual->esquerda != NULL) {
@@ -156,6 +158,8 @@ void arvore_apagar(Arvore *arvore, int x) {
 
     if (atual->esquerda == NULL && atual->direita == NULL) {
         // Caso 1: o nó a ser removido é uma folha
+        // nesse caso e so percorrer  até o nó ver se os dois ponteiros apontam pro null se for e so ele não tem nada embaixo
+        // so apagar, retorna null pro ponteiro anterio e prontim
         if (pai == NULL) {
             // O nó é a raiz
             free(atual);
@@ -169,6 +173,8 @@ void arvore_apagar(Arvore *arvore, int x) {
         }
     } else if (atual->esquerda == NULL || atual->direita == NULL) {
         // Caso 2: o nó a ser removido tem apenas um filho
+        // nesse caso o que fazemos é  percorre a raiz e verificar se um dos ponteiros aponta pro nulo que ai so vai ter um no ligado a ele
+        //o que fazemos é o ponteiro do nó "pai" que é o anterio do que vamos apagar apontar pro filho 
         No *filho = (atual->esquerda != NULL) ? atual->esquerda : atual->direita;
         if (pai == NULL) {
             // O nó é a raiz
@@ -182,10 +188,13 @@ void arvore_apagar(Arvore *arvore, int x) {
             free(atual);
         }
     } else {
-        // Caso 3: o nó a ser removido tem dois filhos
+        // Caso 3: o nó a ser removido tem dois filhos 
+        //Nesse caso o que fazemos é percorre a arvore pela direita procurando o valor mais a esquerda ( o ultimo nó a esquerda ) 
+        // e trocamos o valor pra posição do no que seria removido desse jeito a organização da arvore se mantém
+        // poderia ter sido feito o contrario também percorrer pela esquerda e pegar o valor mais a direita
         No *sucessor = encontrar_minimo(atual->direita);
         int temp = sucessor->valor;
         arvore_apagar(arvore, temp); // Remove o sucessor recursivamente
         atual->valor = temp;
     }
-}
+} 
